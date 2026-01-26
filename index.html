@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .wrapper {
+    display: grid;
+    /* Створюємо 5 колонок і 5 рядків по 50px */
+    grid-template-columns: repeat(5, 50px);
+    grid-template-rows: repeat(5, 50px);
+    gap: 4px; /* Відступ між кубиками */
+  }
+
+  .box {
+    width: 50px;
+    height: 50px;
+  }
+
+  .blue {
+    background-color: #6fb0e3; /* Блакитний колір з вашого фото */
+  }
+
+  .orange {
+    background-color: #e8a841; /* Помаранчевий колір */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  /* Позиціонування помаранчевих кубиків */
+  .plus-right {
+    grid-column: 5;
+    grid-row: 1;
+  }
+
+  .plus-bottom {
+    grid-column: 1;
+    grid-row: 5;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="box blue"></div><div class="box blue"></div><div class="box blue"></div><div class="box blue"></div>
+  <div class="box orange plus-right">+</div> <div class="box blue"></div><div class="box blue"></div><div class="box blue"></div><div class="box blue"></div>
+  <div></div> <div class="box blue"></div><div class="box blue"></div><div class="box blue"></div><div class="box blue"></div>
+  <div></div> <div class="box blue"></div><div class="box blue"></div><div class="box blue"></div><div class="box blue"></div>
+  <div></div> <div class="box orange plus-bottom">+</div> </div>
+
+</body>
+</html>
