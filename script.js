@@ -1,7 +1,10 @@
 const app = document.getElementById('app');
+const wrapper = document.createElement("div");
+wrapper.className = "wrapper";
+app.appendChild(wrapper);
 const grid = document.createElement("div");
 grid.className = "grid";
-app.appendChild(grid);
+wrapper.appendChild(grid);
 
 let cols = 4;
 grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
@@ -9,13 +12,23 @@ grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
 let rows = 4;
 grid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
 
-const totalCells = rows * cols;
+function renderGrid() {
+  grid.innerHTML = "";
+  grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+  grid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
 
-for (let i = 0; i < totalCells; i++) {
-  const cell = document.createElement("div");
-  cell.className = "cell";
-  grid.appendChild(cell);
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+     const cell = document.createElement("div");
+     cell.className = "cell";
+     cell.dataset.row = r;
+     cell.dataset.col = c;
+     grid.appendChild(cell);
+    }
+  }
 }
+
+renderGrid();
 
 const addColBtn = document.createElement("button");
 addColBtn.className = "btn add-col";
@@ -25,32 +38,65 @@ const addRowBtn = document.createElement("button");
 addRowBtn.className = "btn add-row";
 addRowBtn.textContent = "+";
 
-app.appendChild(addColBtn);
-app.appendChild(addRowBtn);
+const delColBtn = document.createElement("button");
+delColBtn.className = "btn del-col";
+delColBtn.textContent = "-";
+
+const delRowBtn = document.createElement("button");
+delRowBtn.className = "btn del-row";
+delRowBtn.textContent = "-";
+
+wrapper.appendChild(addColBtn);
+wrapper.appendChild(addRowBtn);
+wrapper.appendChild(delColBtn);
+wrapper.appendChild(delRowBtn);
+
+const CELL_SIZE = 50;
+const GAP = 2;
+const STEP = CELL_SIZE + GAP;
+
+grid.addEventListener("mousemove", (event) => {
+  const cell = event.target.closest(".cell");
+  if (!cell) return;
+
+  const rowIndex = Number(cell.dataset.row);
+  const colIndex = Number(cell.dataset.col);
+
+  delRowBtn.style.display = "block";
+  delColBtn.style.display = "block";
+
+  delRowBtn.style.transform = `translateY(${rowIndex * STEP}px)`;
+  delColBtn.style.transform = `translateX(${colIndex * STEP}px)`;
+
+  delRowBtn.dataset.rowIndex = rowIndex;
+  delColBtn.dataset.colIndex = colIndex;
+});
+
+grid.addEventListener("mouseleave",() => {
+  delRowBtn.style.display = "none";
+  delColBtn.style.display = "none";
+});
 
 addColBtn.addEventListener("click", () => {
   cols = cols + 1;
-  grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
-  const totalCells = rows * cols;
-  grid.innerHTML = "";
-  for (let i = 0; i < totalCells; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    grid.appendChild(cell);
-  }
+  renderGrid();
 });
 
 addRowBtn.addEventListener("click", () => {
   rows = rows + 1;
-  grid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
-  const totalCells = rows * cols;
-  grid.innerHTML = "";
-  for (let i = 0; i < totalCells; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    grid.appendChild(cell);
-  }
+  renderGrid();
+});
 
+delRowBtn.addEventListener("click", () => {
+  if (rows <= 1) return;
+  rows = rows - 1;
+  renderGrid();
+});
+
+delColBtn.addEventListener("click", () => {
+  if (cols <= 1) return;
+  cols = cols - 1;
+  renderGrid();
 });
 
 

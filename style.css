@@ -1,5 +1,49 @@
 * { box-sizing: border-box; }
 
+.wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #fff;
+}
+
+.add-col {
+  position: absolute;
+  top: 2px;
+  right: -52px;
+  background: #e6a93b;
+}
+
+.add-row {
+  position: absolute;
+  left: 2px;
+  bottom: -52px;
+  background: #e6a93b;
+}
+
+.del-col {
+  display: none;
+  position: absolute;
+  top: -52px;
+  left: 2px;
+  background: #9f1d14;
+}
+
+.del-row {
+  display: none;
+  position: absolute;
+  left: -52px;
+  top: 2px;
+  background: #9f1d14;
+}
+
 .cell {
   width: 50px;
   height: 50px;
