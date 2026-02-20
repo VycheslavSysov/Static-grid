@@ -1,4 +1,4 @@
-const app = document.getElementById('app');
+const app = document.getElementById("app");
 const wrapper = document.createElement("div");
 wrapper.className = "wrapper";
 app.appendChild(wrapper);
@@ -19,11 +19,13 @@ function renderGrid() {
 
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-     const cell = document.createElement("div");
-     cell.className = "cell";
-     cell.dataset.row = r;
-     cell.dataset.col = c;
-     grid.appendChild(cell);
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+      grid.appendChild(cell);
+      /*cell.textContent = `${r + 1},${c + 1}`;
+      cell.style.fontSize = "10px";*/
     }
   }
 }
@@ -55,6 +57,11 @@ const CELL_SIZE = 50;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
 
+function hideDeleteButtons() {
+  delRowBtn.style.display = "none";
+  delColBtn.style.display = "none";
+}
+
 grid.addEventListener("mousemove", (event) => {
   const cell = event.target.closest(".cell");
   if (!cell) return;
@@ -62,8 +69,8 @@ grid.addEventListener("mousemove", (event) => {
   const rowIndex = Number(cell.dataset.row);
   const colIndex = Number(cell.dataset.col);
 
-  delRowBtn.style.display = "block";
-  delColBtn.style.display = "block";
+  delRowBtn.style.display = rows > 1 ? "block" : "none";
+  delColBtn.style.display = cols > 1 ? "block" : "none";
 
   delRowBtn.style.transform = `translateY(${rowIndex * STEP}px)`;
   delColBtn.style.transform = `translateX(${colIndex * STEP}px)`;
@@ -72,9 +79,18 @@ grid.addEventListener("mousemove", (event) => {
   delColBtn.dataset.colIndex = colIndex;
 });
 
-grid.addEventListener("mouseleave",() => {
-  delRowBtn.style.display = "none";
-  delColBtn.style.display = "none";
+grid.addEventListener("mouseleave", (event) => {
+  const toDeleteBtn = event.relatedTarget?.closest(".del-row, .del-col");
+  if (toDeleteBtn) return;
+  hideDeleteButtons();
+});
+
+delRowBtn.addEventListener("mouseleave", () => { // коли курсор виходить з кнопки рядка
+  hideDeleteButtons();
+});
+
+delColBtn.addEventListener("mouseleave", () => {
+  hideDeleteButtons();
 });
 
 addColBtn.addEventListener("click", () => {
@@ -91,12 +107,14 @@ delRowBtn.addEventListener("click", () => {
   if (rows <= 1) return;
   rows = rows - 1;
   renderGrid();
+  hideDeleteButtons();
 });
 
 delColBtn.addEventListener("click", () => {
   if (cols <= 1) return;
   cols = cols - 1;
   renderGrid();
+  hideDeleteButtons();
 });
 
 
