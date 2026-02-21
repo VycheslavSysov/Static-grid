@@ -1,4 +1,4 @@
-const app = document.getElementById("app");
+const app = document.querySelector("#app");
 const tablesRoot = document.createElement("div");
 
 const CELL_SIZE = 50;
