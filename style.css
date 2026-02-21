@@ -2,6 +2,13 @@
   box-sizing: border-box;
 }
 
+.tables {
+  display: flex;
+  flex-direction: column;
+  gap: 110px;
+  align-items: flex-start;
+}
+
 .wrapper {
   display: inline-block;
   position: relative;
@@ -22,8 +29,14 @@
 
 .btn:active {
   transform: translateY(1px);
-  border: #6aaee6 solid 1px;
+  border: 1px solid #6aaee6;
   border-radius: 1px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
 }
 
 .add-col {
@@ -59,7 +72,10 @@
 .cell {
   width: 50px;
   height: 50px;
+  font-size: 10px;
+  line-height: 1.2;
   background-color: #6aaee6;
+  color: rgba(255, 255, 255, 0.9);
   transition: filter 0.15s, transform 0.15s;
 }
 
