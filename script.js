@@ -41,7 +41,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
         cell.dataset.row = String(r);
         cell.dataset.col = String(c);
         grid.appendChild(cell);
-        cell.textContent = `${rowIds[r]},${colIds[c]}`;
+        // cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
     }
   }
@@ -139,7 +139,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
     if (cols <= 1) return;
 
     const colIndex = Number(delColBtn.dataset.colIndex);
-    if (cols <= 1) return;
 
     colIds.splice(colIndex, 1);
     cols = cols - 1;
