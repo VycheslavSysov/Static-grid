@@ -5,8 +5,6 @@ const CELL_SIZE = 50;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
 
-const MAX_ROWS = 12;
-const MAX_COLS = 12;
 
 tablesRoot.className = "tables";
 app.appendChild(tablesRoot);
@@ -20,8 +18,11 @@ function createTable(parent, startRows = 4, startCols = 4) {
   grid.className = "grid";
   wrapper.appendChild(grid);
 
-  let cols = Math.min(Math.max(startCols, 1), MAX_COLS);
-  let rows = Math.min(Math.max(startRows, 1), MAX_ROWS);
+  let cols = startCols;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+
+  let rows = startRows;
+  grid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
 
   let rowIds = Array.from({length: rows}, (_, i) => i + 1);
   let colIds = Array.from({length: cols}, (_, i) => i + 1);
@@ -40,11 +41,12 @@ function createTable(parent, startRows = 4, startCols = 4) {
         cell.dataset.row = String(r);
         cell.dataset.col = String(c);
         grid.appendChild(cell);
-        // cell.textContent = `${rowIds[r]},${colIds[c]}`;
+        cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
     }
-    updateAddButtonsState();
   }
+
+  renderGrid();
 
 
   const addColBtn = document.createElement("button");
@@ -72,13 +74,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
     delRowBtn.style.display = "none";
     delColBtn.style.display = "none";
   }
-
-  function updateAddButtonsState() {
-    addColBtn.disabled = cols >= MAX_COLS;
-    addRowBtn.disabled = rows >= MAX_ROWS;
-  }
-
-  renderGrid();
 
   grid.addEventListener("mousemove", (event) => {
     const cell = event.target.closest(".cell");
@@ -112,7 +107,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addColBtn.addEventListener("click", () => {
-    if (cols >= MAX_COLS) return;
+
     cols = cols + 1;
     colIds.push(nextColId);
     nextColId = nextColId + 1;
@@ -121,7 +116,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addRowBtn.addEventListener("click", () => {
-    if (rows >= MAX_ROWS) return;
+
     rows = rows + 1;
     rowIds.push(nextRowId);
     nextRowId = nextRowId + 1;
