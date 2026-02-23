@@ -40,7 +40,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
         cell.dataset.row = String(r);
         cell.dataset.col = String(c);
         grid.appendChild(cell);
-        // cell.textContent = `${rowIds[r]},${colIds[c]}`;
+        cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
     }
     updateAddButtonsState();
@@ -133,7 +133,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
     if (rows <= 1) return;
 
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
-    if (!Number.isInteger(rowIndex)) return;
 
     rowIds.splice(rowIndex, 1);
     rows = rows - 1;
@@ -145,7 +144,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
     if (cols <= 1) return;
 
     const colIndex = Number(delColBtn.dataset.colIndex);
-    if (!Number.isInteger(colIndex)) return;
 
     colIds.splice(colIndex, 1);
     cols = cols - 1;
