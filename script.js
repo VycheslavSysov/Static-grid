@@ -1,4 +1,4 @@
-const app = document.getElementById ("app");
+const app = document.getElementById("app");
 const tablesRoot = document.createElement("div");
 
 const CELL_SIZE = 50;
@@ -23,8 +23,8 @@ function createTable(parent, startRows = 4, startCols = 4) {
   let cols = Math.min(Math.max(startCols, 1), MAX_COLS);
   let rows = Math.min(Math.max(startRows, 1), MAX_ROWS);
 
-  let rowIds = Array.from({ length: rows }, (_, i) => i + 1 );
-  let colIds = Array.from({ length: cols }, (_, i) => i + 1 );
+  let rowIds = Array.from({length: rows}, (_, i) => i + 1);
+  let colIds = Array.from({length: cols}, (_, i) => i + 1);
   let nextRowId = rows + 1;
   let nextColId = cols + 1;
 
