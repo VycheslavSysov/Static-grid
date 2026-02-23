@@ -19,10 +19,10 @@ function createTable(parent, startRows = 4, startCols = 4) {
   wrapper.appendChild(grid);
 
   let cols = startCols;
-  grid.style.gridTemplateColumns = `repeat(${cols}, 50px)`;
+  grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
 
   let rows = startRows;
-  grid.style.gridTemplateRows = `repeat(${rows}, 50px)`;
+  grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
 
   let rowIds = Array.from({length: rows}, (_, i) => i + 1);
   let colIds = Array.from({length: cols}, (_, i) => i + 1);
@@ -41,7 +41,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
         cell.dataset.row = String(r);
         cell.dataset.col = String(c);
         grid.appendChild(cell);
-        cell.textContent = `${rowIds[r]},${colIds[c]}`;
+        // cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
     }
   }
@@ -136,7 +136,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   delColBtn.addEventListener("click", () => {
-    if (cols <= 1) return;
 
     const colIndex = Number(delColBtn.dataset.colIndex);
     if (cols <= 1) return;
