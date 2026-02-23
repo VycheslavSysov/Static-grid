@@ -40,7 +40,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
         cell.dataset.row = String(r);
         cell.dataset.col = String(c);
         grid.appendChild(cell);
-        cell.textContent = `${rowIds[r]},${colIds[c]}`;
+        // cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
     }
     updateAddButtonsState();
