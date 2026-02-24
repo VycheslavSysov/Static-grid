@@ -5,24 +5,37 @@ const CELL_SIZE = 50;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
 
-
 tablesRoot.className = "tables";
 app.appendChild(tablesRoot);
 
 function createTable(parent, startRows = 4, startCols = 4) {
-
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
   parent.appendChild(wrapper);
+
   const grid = document.createElement("div");
   grid.className = "grid";
   wrapper.appendChild(grid);
 
   let cols = startCols;
-  grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
-
   let rows = startRows;
-  grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+  const cells = []
+
+
+  function updateGridTemplate() {
+   grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
+   grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+  }
+
+  function createCell(r, c) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.row = String(r);
+    cell.dataset.col = String(c);
+    return cell;
+  }
+
+
 
   let rowIds = Array.from({length: rows}, (_, i) => i + 1);
   let colIds = Array.from({length: cols}, (_, i) => i + 1);
@@ -147,9 +160,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 }
 
-createTable(tablesRoot);
-createTable(tablesRoot);
-createTable(tablesRoot);
+for (let i = 0; i < 3;i++)createTable(tablesRoot);
 
 
 
