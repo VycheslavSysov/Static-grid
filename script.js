@@ -120,7 +120,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   delRowBtn.addEventListener("click", () => {
     if (rows <= 1) return;
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
-    if (!Number.isInteger(rowIndex)) return;
     rowIds.splice(rowIndex, 1);
     rows = rows - 1;
     renderGrid();
@@ -130,7 +129,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   delColBtn.addEventListener("click", () => {
     if (cols <= 1) return;
     const colIndex = Number(delColBtn.dataset.colIndex);
-    if (!Number.isInteger(colIndex)) return;
     colIds.splice(colIndex, 1);
     cols = cols - 1;
     renderGrid();
