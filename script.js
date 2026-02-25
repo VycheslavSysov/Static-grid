@@ -1,41 +1,24 @@
 const app = document.getElementById("app");
 const tablesRoot = document.createElement("div");
+tablesRoot.className = "tables";
+app.appendChild(tablesRoot);
 
 const CELL_SIZE = 50;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
 
-tablesRoot.className = "tables";
-app.appendChild(tablesRoot);
-
 function createTable(parent, startRows = 4, startCols = 4) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
   parent.appendChild(wrapper);
-
   const grid = document.createElement("div");
   grid.className = "grid";
   wrapper.appendChild(grid);
 
   let cols = startCols;
+  grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
   let rows = startRows;
-  const cells = []
-
-
-  function updateGridTemplate() {
-   grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
-   grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
-  }
-
-  function createCell(r, c) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.dataset.row = String(r);
-    cell.dataset.col = String(c);
-    return cell;
-  }
-
-
+  grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
 
   let rowIds = Array.from({length: rows}, (_, i) => i + 1);
   let colIds = Array.from({length: cols}, (_, i) => i + 1);
@@ -60,7 +43,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   }
 
   renderGrid();
-
 
   const addColBtn = document.createElement("button");
   addColBtn.className = "btn add-col";
@@ -120,7 +102,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addColBtn.addEventListener("click", () => {
-
     cols = cols + 1;
     colIds.push(nextColId);
     nextColId = nextColId + 1;
@@ -129,7 +110,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addRowBtn.addEventListener("click", () => {
-
     rows = rows + 1;
     rowIds.push(nextRowId);
     nextRowId = nextRowId + 1;
@@ -139,9 +119,8 @@ function createTable(parent, startRows = 4, startCols = 4) {
 
   delRowBtn.addEventListener("click", () => {
     if (rows <= 1) return;
-
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
-
+    if (!Number.isInteger(rowIndex)) return;
     rowIds.splice(rowIndex, 1);
     rows = rows - 1;
     renderGrid();
@@ -149,24 +128,15 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   delColBtn.addEventListener("click", () => {
-
-    const colIndex = Number(delColBtn.dataset.colIndex);
     if (cols <= 1) return;
-
+    const colIndex = Number(delColBtn.dataset.colIndex);
+    if (!Number.isInteger(colIndex)) return;
     colIds.splice(colIndex, 1);
     cols = cols - 1;
     renderGrid();
     hideDeleteButtons();
   });
 }
-
-for (let i = 0; i < 3;i++)createTable(tablesRoot);
-
-
-
-
-
-
-
-
-
+createTable(tablesRoot);
+createTable(tablesRoot);
+createTable(tablesRoot);
