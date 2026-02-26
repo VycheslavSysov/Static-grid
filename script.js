@@ -43,15 +43,14 @@ function createTable(parent, startRows = 4, startCols = 4) {
 
   function renderGrid() {
     grid.innerHTML = "";
-    grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
-    grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+    cells.length = 0;
+    updateGridTemplate();
 
     for (let r = 0; r < rows; r++) {
+      cells[r] = [];
       for (let c = 0; c < cols; c++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.dataset.row = String(r);
-        cell.dataset.col = String(c);
+        const cell = createCell(r, c);
+        cells[r][c] = cell;
         grid.appendChild(cell);
         // cell.textContent = `${rowIds[r]},${colIds[c]}`;
       }
@@ -108,11 +107,9 @@ function createTable(parent, startRows = 4, startCols = 4) {
     if (toDeleteBtn) return;
     hideDeleteButtons();
   });
-
   delRowBtn.addEventListener("mouseleave", () => { // коли курсор виходить з кнопки рядка
     hideDeleteButtons();
   });
-
   delColBtn.addEventListener("mouseleave", () => {
     hideDeleteButtons();
   });
