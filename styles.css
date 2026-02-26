@@ -89,3 +89,30 @@ body {
   padding: 80px;
   font-family: sans-serif;
 }
+
+.page-nav {
+  position: fixed;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  background: #6aaee6;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.page-nav:hover {
+  filter: brightness(1.1);
+}
+
+.page-nav-top {
+  bottom: 78px;
+}
+
+.page-nav-bottom {
+  bottom: 24px;
+}
