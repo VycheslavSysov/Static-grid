@@ -16,14 +16,30 @@ function createTable(parent, startRows = 4, startCols = 4) {
   wrapper.appendChild(grid);
 
   let cols = startCols;
-  grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
   let rows = startRows;
-  grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+  const cells = [];
 
-  let rowIds = Array.from({length: rows}, (_, i) => i + 1);
-  let colIds = Array.from({length: cols}, (_, i) => i + 1);
-  let nextRowId = rows + 1;
-  let nextColId = cols + 1;
+  function updateGridTemplate() {
+    grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
+    grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+  }
+
+  function createCell(r, c) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.row = String(r);
+    cell.dataset.col = String(c);
+    return cell;
+  }
+
+  function updateDataCells() {
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        cells[r][c].dataset.row = String(r);
+        cells[r][c].dataset.col = String(c);
+      }
+    }
+  }
 
   function renderGrid() {
     grid.innerHTML = "";
@@ -120,6 +136,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   delRowBtn.addEventListener("click", () => {
     if (rows <= 1) return;
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
+    if (!Number.isInteger(rowIndex)) return;
     rowIds.splice(rowIndex, 1);
     rows = rows - 1;
     renderGrid();
@@ -129,6 +146,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   delColBtn.addEventListener("click", () => {
     if (cols <= 1) return;
     const colIndex = Number(delColBtn.dataset.colIndex);
+    if (!Number.isInteger(colIndex)) return;
     colIds.splice(colIndex, 1);
     cols = cols - 1;
     renderGrid();
