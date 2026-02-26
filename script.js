@@ -103,8 +103,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   grid.addEventListener("mouseleave", (event) => {
-    const toDeleteBtn = event.relatedTarget?.closest(".del-row, .del-col");
-    if (toDeleteBtn) return;
+   if (event.relatedTarget?.closest(".del-row, .del-col")) return;
     hideDeleteButtons();
   });
   delRowBtn.addEventListener("mouseleave", () => { // коли курсор виходить з кнопки рядка
@@ -115,41 +114,54 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addColBtn.addEventListener("click", () => {
-    cols = cols + 1;
-    colIds.push(nextColId);
-    nextColId = nextColId + 1;
-    renderGrid();
+    cols++;
+    updateGridTemplate();
+
+    for (let r = 0; r < rows; r++) {
+      const cell = createCell(r, cols - 1);
+      cells[r].push(cell);
+      grid.appendChild(cell);
+    }
     hideDeleteButtons();
   });
 
   addRowBtn.addEventListener("click", () => {
-    rows = rows + 1;
-    rowIds.push(nextRowId);
-    nextRowId = nextRowId + 1;
-    renderGrid();
+    rows++;
+    updateGridTemplate();
+
+    cells[rows - 1] = [];
+    for (let c = 0; c < cols; c++) {
+      const cell = createCell( rows - 1, c);
+      cells[rows - 1][c] = cell;
+      grid.appendChild(cell);
+    }
     hideDeleteButtons();
   });
 
   delRowBtn.addEventListener("click", () => {
     if (rows <= 1) return;
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
-    if (!Number.isInteger(rowIndex)) return;
-    rowIds.splice(rowIndex, 1);
-    rows = rows - 1;
-    renderGrid();
+    cells[rowIndex].forEach(cell => cell.remove());
+    cells.splice(rowIndex, 1);
+    rows--;
+
+    updateGridTemplate();
+    updateDataCells();
     hideDeleteButtons();
   });
 
   delColBtn.addEventListener("click", () => {
     if (cols <= 1) return;
     const colIndex = Number(delColBtn.dataset.colIndex);
-    if (!Number.isInteger(colIndex)) return;
-    colIds.splice(colIndex, 1);
-    cols = cols - 1;
-    renderGrid();
+    for (let r = 0; r < rows; r++) {
+      cells[r][colIndex].remove();
+      cells[r].splice(colIndex, 1);
+    }
+    cols--;
+
+    updateGridTemplate();
+    updateDataCells();
     hideDeleteButtons();
   });
 }
-createTable(tablesRoot);
-createTable(tablesRoot);
-createTable(tablesRoot);
+for (let i= 0; i < 11; i++)createTable(tablesRoot);
