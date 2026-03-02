@@ -12,17 +12,17 @@ function createTable(parent, startRows = 4, startCols = 4) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
   parent.appendChild(wrapper);
-  const grid = document.createElement("div");
-  grid.className = "grid";
-  wrapper.appendChild(grid);
+  const table = document.createElement("div");
+  table.className = "table";
+  wrapper.appendChild(table);
 
   let cols = startCols;
   let rows = startRows;
   const cells = [];
 
   function updateGridTemplate() {
-    grid.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
-    grid.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
+    table.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
+    table.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
   }
 
   function createCell(r, c) {
@@ -43,16 +43,21 @@ function createTable(parent, startRows = 4, startCols = 4) {
   }
 
   function renderGrid() {
-    grid.innerHTML = "";
+    table.innerHTML = "";
     cells.length = 0;
     updateGridTemplate();
 
     for (let r = 0; r < rows; r++) {
       cells[r] = [];
+
+      const row = document.createElement("div");
+      row.className = "row";
+      table.appendChild(row);
+
       for (let c = 0; c < cols; c++) {
         const cell = createCell(r, c);
         cells[r][c] = cell;
-        grid.appendChild(cell);
+        row.appendChild(cell);
       }
     }
   }
@@ -85,7 +90,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
     delColBtn.style.display = "none";
   }
 
-  grid.addEventListener("mousemove", (event) => {
+  table.addEventListener("mousemove", (event) => {
     const cell = event.target.closest(".cell");
     if (!cell) return;
 
@@ -102,7 +107,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
     delColBtn.dataset.colIndex = String(colIndex);
   });
 
-  grid.addEventListener("mouseleave", (event) => {
+  table.addEventListener("mouseleave", (event) => {
    if (event.relatedTarget?.closest(".del-row, .del-col")) return;
     hideDeleteButtons();
   });
@@ -120,7 +125,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
     for (let r = 0; r < rows; r++) {
       const cell = createCell(r, cols - 1);
       cells[r].push(cell);
-      grid.appendChild(cell);
+      table.appendChild(cell);
     }
     hideDeleteButtons();
   });
@@ -133,7 +138,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
     for (let c = 0; c < cols; c++) {
       const cell = createCell( rows - 1, c);
       cells[rows - 1][c] = cell;
-      grid.appendChild(cell);
+      table.appendChild(cell);
     }
     hideDeleteButtons();
   });
