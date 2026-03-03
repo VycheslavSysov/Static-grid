@@ -3,8 +3,9 @@ const tablesRoot = document.createElement("div");
 tablesRoot.className = "tables";
 app.appendChild(tablesRoot);
 
-const CELL_SIZE = 50;
-const GAP = 2;
+const rootStyles = getComputedStyle(document.documentElement);
+const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
+const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
 const ENABLE_PAGE_NAV = true;
 
@@ -108,7 +109,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
    if (event.relatedTarget?.closest(".del-row, .del-col")) return;
     hideDeleteButtons();
   });
-  delRowBtn.addEventListener("mouseleave", () => { // коли курсор виходить з кнопки рядка
+  delRowBtn.addEventListener("mouseleave", () => {
     hideDeleteButtons();
   });
   delColBtn.addEventListener("mouseleave", () => {
