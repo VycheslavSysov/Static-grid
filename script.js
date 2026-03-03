@@ -7,7 +7,6 @@ const rootStyles = getComputedStyle(document.documentElement);
 const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
 const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
-const ENABLE_PAGE_NAV = true;
 
 function createTable(parent, startRows = 4, startCols = 4) {
   const wrapper = document.createElement("div");
@@ -169,31 +168,3 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 }
 for (let i= 0; i < 11; i++)createTable(tablesRoot);
-
-if (ENABLE_PAGE_NAV) {
-  const scrollTopBtn = document.createElement("button");
-  scrollTopBtn.className = "page-nav page-nav-top";
-  scrollTopBtn.textContent = "↑";
-
-  const scrollBottomBtn = document.createElement("button");
-  scrollBottomBtn.className = "page-nav page-nav-bottom";
-  scrollBottomBtn.textContent = "↓";
-
-  document.body.appendChild(scrollTopBtn);
-  document.body.appendChild(scrollBottomBtn);
-
-  scrollTopBtn.addEventListener("click", () => {
-    window.scrollTo({top: 0, behavior: "smooth"});
-  });
-
-  scrollBottomBtn.addEventListener("click", () => {
-    window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
-  });
-
-  function updatePageNavVisibility() {
-    scrollTopBtn.style.display = window.scrollY > 200 ? "block" : "none";
-  }
-
-  updatePageNavVisibility();
-  window.addEventListener("scroll", updatePageNavVisibility);
-}
