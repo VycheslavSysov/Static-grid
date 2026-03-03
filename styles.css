@@ -78,11 +78,17 @@
   transition: filter 0.15s, transform 0.15s;
 }
 
-.grid {
-  display: grid;
+.table {
+  display: flex;
+  flex-direction: column;
   gap: var(--cell-gap);
   padding: var(--cell-gap);
   border: 1px solid #6aaee6;
+}
+
+.row {
+  display: flex;
+  gap: var(--cell-gap);
 }
 
 .cell:hover {

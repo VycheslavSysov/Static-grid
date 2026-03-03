@@ -19,11 +19,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   let cols = startCols;
   let rows = startRows;
   const cells = [];
-
-  function updateGridTemplate() {
-    table.style.gridTemplateColumns = `repeat(${cols}, ${CELL_SIZE}px)`;
-    table.style.gridTemplateRows = `repeat(${rows}, ${CELL_SIZE}px)`;
-  }
+  const rowElements = [];
 
   function createCell(r, c) {
     const cell = document.createElement("div");
@@ -45,7 +41,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
   function renderGrid() {
     table.innerHTML = "";
     cells.length = 0;
-    updateGridTemplate();
+    rowElements.length = 0;
 
     for (let r = 0; r < rows; r++) {
       cells[r] = [];
@@ -53,6 +49,7 @@ function createTable(parent, startRows = 4, startCols = 4) {
       const row = document.createElement("div");
       row.className = "row";
       table.appendChild(row);
+      rowElements[r] = row;
 
       for (let c = 0; c < cols; c++) {
         const cell = createCell(r, c);
@@ -120,25 +117,27 @@ function createTable(parent, startRows = 4, startCols = 4) {
 
   addColBtn.addEventListener("click", () => {
     cols++;
-    updateGridTemplate();
 
     for (let r = 0; r < rows; r++) {
       const cell = createCell(r, cols - 1);
       cells[r].push(cell);
-      table.appendChild(cell);
+      rowElements[r].appendChild(cell);
     }
     hideDeleteButtons();
   });
 
   addRowBtn.addEventListener("click", () => {
     rows++;
-    updateGridTemplate();
+    const row = document.createElement("div");
+    row.className = "row";
+    table.appendChild(row);
+    rowElements[rows - 1] = row;
 
     cells[rows - 1] = [];
     for (let c = 0; c < cols; c++) {
       const cell = createCell( rows - 1, c);
       cells[rows - 1][c] = cell;
-      table.appendChild(cell);
+      row.appendChild(cell);
     }
     hideDeleteButtons();
   });
@@ -146,11 +145,11 @@ function createTable(parent, startRows = 4, startCols = 4) {
   delRowBtn.addEventListener("click", () => {
     if (rows <= 1) return;
     const rowIndex = Number(delRowBtn.dataset.rowIndex);
-    cells[rowIndex].forEach(cell => cell.remove());
+    rowElements[rowIndex].remove();
+    rowElements.splice(rowIndex, 1);
     cells.splice(rowIndex, 1);
     rows--;
 
-    updateGridTemplate();
     updateDataCells();
     hideDeleteButtons();
   });
@@ -164,7 +163,6 @@ function createTable(parent, startRows = 4, startCols = 4) {
     }
     cols--;
 
-    updateGridTemplate();
     updateDataCells();
     hideDeleteButtons();
   });
