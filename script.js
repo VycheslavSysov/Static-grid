@@ -13,19 +13,66 @@ class Table {
     this.parent = parent;
     this.startRows = startRows;
     this.startColumns = startColumns;
+    this.initializeState();
     this.createLayout();
     this.renderGrid();
     this.bindEvents();
   }
-  bindEvents() {}
-  createLayout() {}
-  renderGrid() {}
+
+  createCell(rowIndex, columnIndex) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.row = String(rowIndex);
+    cell.dataset.column = String(columnIndex);
+    return cell;
+  }
+
+  bindEvents() {
+  }
+
+  initializeState() {
+    this.rows = this.startRows;
+    this.columns = this.startColumns;
+    this.cells = [];
+    this.rowElements = [];
+  }
+
+  createLayout() {
+    this.wrapper = document.createElement("div");
+    this.wrapper.className = "wrapper";
+    this.parent.appendChild(this.wrapper);
+    this.tableElement = document.createElement("div");
+    this.tableElement.className = "table";
+    this.wrapper.appendChild(this.tableElement);
+  }
+
+  renderGrid() {
+    this.tableElement.innerHTML = "";
+    this.cells.length = 0;
+    this.rowElements.length = 0;
+
+    for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
+      this.cells[rowIndex] = [];
+
+      const rowElement = document.createElement("div");
+      rowElement.className = "row";
+      this.tableElement.appendChild(rowElement);
+      this.rowElements[rowIndex] = rowElement;
+
+      for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
+        const cellElement = this.createCell(rowIndex, columnIndex);
+        this.cells[rowIndex][columnIndex] = cellElement;
+        rowElement.appendChild(cellElement);
+      }
+    }
+  }
 }
 
 function createTable(parent, startRows = 4, startColumns = 4) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
   parent.appendChild(wrapper);
+
   const table = document.createElement("div");
   table.className = "table";
   wrapper.appendChild(table);
@@ -101,7 +148,7 @@ function createTable(parent, startRows = 4, startColumns = 4) {
     deleteColumnButton.style.display = "none";
   }
 
-  function addNewColumn () {
+  function addNewColumn() {
     columns++;
     const newColumnIndex = columns - 1;
 
@@ -112,7 +159,7 @@ function createTable(parent, startRows = 4, startColumns = 4) {
     }
   }
 
-  function addNewRow () {
+  function addNewRow() {
     rows++;
     const newRowIndex = rows - 1;
     const rowElement = document.createElement("div");
@@ -122,7 +169,7 @@ function createTable(parent, startRows = 4, startColumns = 4) {
     cells[newRowIndex] = [];
 
     for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
-      const cellElement = createCell( newRowIndex, columnIndex);
+      const cellElement = createCell(newRowIndex, columnIndex);
       cells[newRowIndex][columnIndex] = cellElement;
       rowElement.appendChild(cellElement);
     }
@@ -136,7 +183,7 @@ function createTable(parent, startRows = 4, startColumns = 4) {
     rows--;
   }
 
-  function removeColumnByIndex (columnIndex) {
+  function removeColumnByIndex(columnIndex) {
     for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
       cells[rowIndex][columnIndex].remove();
       cells[rowIndex].splice(columnIndex, 1);
@@ -162,7 +209,7 @@ function createTable(parent, startRows = 4, startColumns = 4) {
   });
 
   table.addEventListener("mouseleave", (event) => {
-   if (event.relatedTarget?.closest(".del-row, .del-col")) return;
+    if (event.relatedTarget?.closest(".del-row, .del-col")) return;
     hideDeleteButtons();
   });
   deleteRowButton.addEventListener("mouseleave", () => {
@@ -200,4 +247,5 @@ function createTable(parent, startRows = 4, startColumns = 4) {
     hideDeleteButtons();
   });
 }
-for (let tableIndex= 0; tableIndex < 11; tableIndex++)createTable(tablesRoot);
+
+for (let tableIndex = 0; tableIndex < 11; tableIndex++) createTable(tablesRoot);
