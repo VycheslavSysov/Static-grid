@@ -8,6 +8,20 @@ const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10
 const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
 
+class Table {
+  constructor(parent, startRows = 4, startColumns = 4) {
+    this.parent = parent;
+    this.startRows = startRows;
+    this.startColumns = startColumns;
+    this.createLayout();
+    this.renderGrid();
+    this.bindEvents();
+  }
+  bindEvents() {}
+  createLayout() {}
+  renderGrid() {}
+}
+
 function createTable(parent, startRows = 4, startColumns = 4) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
