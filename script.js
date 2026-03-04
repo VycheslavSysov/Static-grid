@@ -8,7 +8,7 @@ const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10
 const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
 
-function createTable(parent, startRows = 4, startCols = 4) {
+function createTable(parent, startRows = 4, startColumns = 4) {
   const wrapper = document.createElement("div");
   wrapper.className = "wrapper";
   parent.appendChild(wrapper);
@@ -16,24 +16,24 @@ function createTable(parent, startRows = 4, startCols = 4) {
   table.className = "table";
   wrapper.appendChild(table);
 
-  let cols = startCols;
+  let columns = startColumns;
   let rows = startRows;
   const cells = [];
   const rowElements = [];
 
-  function createCell(r, c) {
+  function createCell(rowIndex, columnIndex) {
     const cell = document.createElement("div");
     cell.className = "cell";
-    cell.dataset.row = String(r);
-    cell.dataset.col = String(c);
+    cell.dataset.row = String(rowIndex);
+    cell.dataset.column = String(columnIndex);
     return cell;
   }
 
   function updateDataCells() {
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        cells[r][c].dataset.row = String(r);
-        cells[r][c].dataset.col = String(c);
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+        cells[rowIndex][columnIndex].dataset.row = String(rowIndex);
+        cells[rowIndex][columnIndex].dataset.column = String(columnIndex);
       }
     }
   }
@@ -43,18 +43,18 @@ function createTable(parent, startRows = 4, startCols = 4) {
     cells.length = 0;
     rowElements.length = 0;
 
-    for (let r = 0; r < rows; r++) {
-      cells[r] = [];
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      cells[rowIndex] = [];
 
-      const row = document.createElement("div");
-      row.className = "row";
-      table.appendChild(row);
-      rowElements[r] = row;
+      const rowElement = document.createElement("div");
+      rowElement.className = "row";
+      table.appendChild(rowElement);
+      rowElements[rowIndex] = rowElement;
 
-      for (let c = 0; c < cols; c++) {
-        const cell = createCell(r, c);
-        cells[r][c] = cell;
-        row.appendChild(cell);
+      for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+        const cellElement = createCell(rowIndex, columnIndex);
+        cells[rowIndex][columnIndex] = cellElement;
+        rowElement.appendChild(cellElement);
       }
     }
   }
@@ -87,21 +87,64 @@ function createTable(parent, startRows = 4, startCols = 4) {
     deleteColumnButton.style.display = "none";
   }
 
+  function addNewColumn () {
+    columns++;
+    const newColumnIndex = columns - 1;
+
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      const cellElement = createCell(rowIndex, newColumnIndex);
+      cells[rowIndex].push(cellElement);
+      rowElements[rowIndex].appendChild(cellElement);
+    }
+  }
+
+  function addNewRow () {
+    rows++;
+    const newRowIndex = rows - 1;
+    const rowElement = document.createElement("div");
+    rowElement.className = "row";
+    table.appendChild(rowElement);
+    rowElements[newRowIndex] = rowElement;
+    cells[newRowIndex] = [];
+
+    for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+      const cellElement = createCell( newRowIndex, columnIndex);
+      cells[newRowIndex][columnIndex] = cellElement;
+      rowElement.appendChild(cellElement);
+    }
+  }
+
+  function removeRowByIndex(rowIndex) {
+
+    rowElements[rowIndex].remove();
+    rowElements.splice(rowIndex, 1);
+    cells.splice(rowIndex, 1);
+    rows--;
+  }
+
+  function removeColumnByIndex (columnIndex) {
+    for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+      cells[rowIndex][columnIndex].remove();
+      cells[rowIndex].splice(columnIndex, 1);
+    }
+    columns--;
+  }
+
   table.addEventListener("mousemove", (event) => {
     const cell = event.target.closest(".cell");
     if (!cell) return;
 
     const rowIndex = Number(cell.dataset.row);
-    const colIndex = Number(cell.dataset.col);
+    const columnIndex = Number(cell.dataset.column);
 
     deleteRowButton.style.display = rows > 1 ? "block" : "none";
-    deleteColumnButton.style.display = cols > 1 ? "block" : "none";
+    deleteColumnButton.style.display = columns > 1 ? "block" : "none";
 
     deleteRowButton.style.transform = `translateY(${rowIndex * STEP}px)`;
-    deleteColumnButton.style.transform = `translateX(${colIndex * STEP}px)`;
+    deleteColumnButton.style.transform = `translateX(${columnIndex * STEP}px)`;
 
     deleteRowButton.dataset.rowIndex = String(rowIndex);
-    deleteColumnButton.dataset.colIndex = String(colIndex);
+    deleteColumnButton.dataset.columnIndex = String(columnIndex);
   });
 
   table.addEventListener("mouseleave", (event) => {
@@ -116,55 +159,31 @@ function createTable(parent, startRows = 4, startCols = 4) {
   });
 
   addColumnButton.addEventListener("click", () => {
-    cols++;
-
-    for (let r = 0; r < rows; r++) {
-      const cell = createCell(r, cols - 1);
-      cells[r].push(cell);
-      rowElements[r].appendChild(cell);
-    }
+    addNewColumn();
     hideDeleteButtons();
   });
 
   addRowButton.addEventListener("click", () => {
-    rows++;
-    const row = document.createElement("div");
-    row.className = "row";
-    table.appendChild(row);
-    rowElements[rows - 1] = row;
-
-    cells[rows - 1] = [];
-    for (let c = 0; c < cols; c++) {
-      const cell = createCell( rows - 1, c);
-      cells[rows - 1][c] = cell;
-      row.appendChild(cell);
-    }
+    addNewRow();
     hideDeleteButtons();
   });
 
   deleteRowButton.addEventListener("click", () => {
     if (rows <= 1) return;
     const rowIndex = Number(deleteRowButton.dataset.rowIndex);
-    rowElements[rowIndex].remove();
-    rowElements.splice(rowIndex, 1);
-    cells.splice(rowIndex, 1);
-    rows--;
 
+    removeRowByIndex(rowIndex);
     updateDataCells();
     hideDeleteButtons();
   });
 
   deleteColumnButton.addEventListener("click", () => {
-    if (cols <= 1) return;
-    const colIndex = Number(deleteColumnButton.dataset.colIndex);
-    for (let r = 0; r < rows; r++) {
-      cells[r][colIndex].remove();
-      cells[r].splice(colIndex, 1);
-    }
-    cols--;
+    if (columns <= 1) return;
+    const columnIndex = Number(deleteColumnButton.dataset.columnIndex);
 
+    removeColumnByIndex(columnIndex);
     updateDataCells();
     hideDeleteButtons();
   });
 }
-for (let i= 0; i < 11; i++)createTable(tablesRoot);
+for (let tableIndex= 0; tableIndex < 11; tableIndex++)createTable(tablesRoot);
