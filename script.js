@@ -15,8 +15,10 @@ class Table {
     this.startColumns = startColumns;
     this.initializeState();
     this.createLayout();
+    this.createControls();
     this.renderGrid();
     this.bindEvents();
+    this.hideDeleteButtons();
   }
 
   createCell(rowIndex, columnIndex) {
@@ -44,6 +46,36 @@ class Table {
     this.tableElement = document.createElement("div");
     this.tableElement.className = "table";
     this.wrapper.appendChild(this.tableElement);
+  }
+
+  createControls() {
+    this.addColumnButton = document.createElement("button");
+    this.addColumnButton.className = "btn add-col";
+    this.addColumnButton.textContent = "+";
+
+    this.addRowButton = document.createElement("button");
+    this.addRowButton.className = "btn add-row";
+    this.addRowButton.textContent = "+";
+
+    this.deleteColumnButton = document.createElement("button");
+    this.deleteColumnButton.className = "btn del-col";
+    this.deleteColumnButton.textContent = "-";
+
+    this.deleteRowButton = document.createElement("button");
+    this.deleteRowButton.className = "btn del-row";
+    this.deleteRowButton.textContent = "-";
+
+    this.wrapper.append(
+        this.addColumnButton,
+        this.addRowButton,
+        this.deleteColumnButton,
+        this.deleteRowButton
+    );
+  }
+
+   hideDeleteButtons() {
+    this.deleteRowButton.style.display = "none";
+    this.deleteColumnButton.style.display = "none";
   }
 
   renderGrid() {
