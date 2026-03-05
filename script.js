@@ -21,7 +21,7 @@ class Table {
     this.hideDeleteButtons();
   }
 
-  createCell(rowIndex, columnIndex) {
+  static createCell(rowIndex, columnIndex) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.row = String(rowIndex);
@@ -133,7 +133,7 @@ class Table {
     const newColumnIndex = this.columns - 1;
 
     for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-      const cellElement = this.createCell(rowIndex, newColumnIndex);
+      const cellElement = Table.createCell(rowIndex, newColumnIndex);
       this.cells[rowIndex].push(cellElement);
       this.rowElements[rowIndex].appendChild(cellElement);
     }
@@ -149,7 +149,7 @@ class Table {
     this.cells[newRowIndex] = [];
 
     for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-      const cellElement = this.createCell(newRowIndex, columnIndex);
+      const cellElement = Table.createCell(newRowIndex, columnIndex);
       this.cells[newRowIndex][columnIndex] = cellElement;
       rowElement.appendChild(cellElement);
     }
@@ -193,7 +193,7 @@ class Table {
       this.rowElements[rowIndex] = rowElement;
 
       for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-        const cellElement = this.createCell(rowIndex, columnIndex);
+        const cellElement = Table.createCell(rowIndex, columnIndex);
         this.cells[rowIndex][columnIndex] = cellElement;
         rowElement.appendChild(cellElement);
       }
