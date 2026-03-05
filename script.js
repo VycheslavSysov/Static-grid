@@ -30,6 +30,56 @@ class Table {
   }
 
   bindEvents() {
+    this.tableElement.addEventListener("mousemove", (event) => {
+      const cell = event.target.closest(".cell");
+      if (!cell) return;
+
+      const rowIndex = Number(cell.dataset.row);
+      const columnIndex = Number(cell.dataset.column);
+
+      this.deleteRowButton.style.display = this.rows > 1 ? "block" : "none";
+      this.deleteColumnButton.style.display = this.columns > 1 ? "block" : "none";
+
+      this.deleteRowButton.style.transform = `translateY(${rowIndex * STEP}px)`;
+      this.deleteColumnButton.style.transform = `translateX(${columnIndex * STEP}px)`;
+
+      this.deleteRowButton.dataset.rowIndex = String(rowIndex);
+      this.deleteColumnButton.dataset.columnIndex = String(columnIndex);
+    });
+
+    this.tableElement.addEventListener("mouseleave", (event) => {
+      if (event.relatedTarget?.closest(".del-row, .del-col")) return;
+      this.hideDeleteButtons();
+    });
+
+    this.addColumnButton.addEventListener("click", () => {
+      this.addNewColumn();
+      this.hideDeleteButtons();
+    });
+
+    this.addRowButton.addEventListener("click", () => {
+      this.addNewRow();
+      this.hideDeleteButtons();
+    });
+
+    this.deleteRowButton.addEventListener("click", () => {
+      if (this.rows <= 1) return;
+      const rowIndex = Number(this.deleteRowButton.dataset.rowIndex);
+
+      this.removeRowByIndex(rowIndex);
+      this.updateDataCells();
+      this.hideDeleteButtons();
+    });
+
+    this.deleteColumnButton.addEventListener("click", () => {
+      if (this.columns <= 1) return;
+      const columnIndex = Number(this.deleteColumnButton.dataset.columnIndex);
+
+      this.removeColumnByIndex(columnIndex);
+      this.updateDataCells();
+      this.hideDeleteButtons();
+    });
+
   }
 
   initializeState() {
@@ -73,7 +123,7 @@ class Table {
     );
   }
 
-   hideDeleteButtons() {
+  hideDeleteButtons() {
     this.deleteRowButton.style.display = "none";
     this.deleteColumnButton.style.display = "none";
   }
@@ -331,4 +381,4 @@ function createTable(parent, startRows = 4, startColumns = 4) {
   });
 }
 
-for (let tableIndex = 0; tableIndex < 11; tableIndex++) createTable(tablesRoot);
+for (let tableIndex = 0; tableIndex < 11; tableIndex++) new Table(tablesRoot);
