@@ -11,9 +11,10 @@ const STEP = CELL_SIZE + GAP;
 class Table {
   constructor(parent, startRows = 4, startColumns = 4) {
     this.parent = parent;
-    this.startRows = startRows;
-    this.startColumns = startColumns;
-    this.initializeState();
+    this.rows = startRows;
+    this.columns = startColumns;
+    this.cells = [];
+    this.row = [];
     this.createLayout();
     this.createControls();
     this.renderGrid();
@@ -29,6 +30,14 @@ class Table {
     return cell;
   }
 
+  getRowsCount() {
+    return this.row.length;
+  }
+
+  getColumnsCount() {
+    return this.cells[0]?.length ?? 0;
+  }
+
   bindEvents() {
     this.table.addEventListener("mousemove", (event) => {
       const cell = event.target.closest(".cell");
@@ -37,8 +46,8 @@ class Table {
       const rowIndex = Number(cell.dataset.row);
       const columnIndex = Number(cell.dataset.column);
 
-      this.deleteRowButton.style.display = this.rows > 1 ? "block" : "none";
-      this.deleteColumnButton.style.display = this.columns > 1 ? "block" : "none";
+      this.deleteRowButton.style.display = this.getRowsCount() > 1 ? "block" : "none";
+      this.deleteColumnButton.style.display = this.getColumnsCount() > 1 ? "block" : "none";
 
       this.deleteRowButton.style.transform = `translateY(${rowIndex * STEP}px)`;
       this.deleteColumnButton.style.transform = `translateX(${columnIndex * STEP}px)`;
@@ -63,7 +72,9 @@ class Table {
     });
 
     this.deleteRowButton.addEventListener("click", () => {
-      if (this.rows <= 1) return;
+      if (this.getRowsCount() <= 1) {
+        return;
+      }
       const rowIndex = Number(this.deleteRowButton.dataset.rowIndex);
 
       this.removeRowByIndex(rowIndex);
@@ -72,7 +83,9 @@ class Table {
     });
 
     this.deleteColumnButton.addEventListener("click", () => {
-      if (this.columns <= 1) return;
+      if (this.getColumnsCount() <= 1) {
+        return;
+      }
       const columnIndex = Number(this.deleteColumnButton.dataset.columnIndex);
 
       this.removeColumnByIndex(columnIndex);
@@ -80,13 +93,6 @@ class Table {
       this.hideDeleteButtons();
     });
 
-  }
-
-  initializeState() {
-    this.rows = this.startRows;
-    this.columns = this.startColumns;
-    this.cells = [];
-    this.row = [];
   }
 
   createLayout() {
@@ -129,10 +135,9 @@ class Table {
   }
 
   addNewColumn() {
-    this.columns++;
-    const newColumnIndex = this.columns - 1;
+    const newColumnIndex = this.getColumnsCount();
 
-    for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < this.getRowsCount(); rowIndex++) {
       const cell = this.createCell(rowIndex, newColumnIndex);
       this.cells[rowIndex].push(cell);
       this.row[rowIndex].appendChild(cell);
@@ -140,15 +145,14 @@ class Table {
   }
 
   addNewRow() {
-    this.rows++;
-    const newRowIndex = this.rows - 1;
+    const newRowIndex = this.getRowsCount();
     const row = document.createElement("div");
     row.className = "row";
     this.table.appendChild(row);
     this.row[newRowIndex] = row;
     this.cells[newRowIndex] = [];
 
-    for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
+    for (let columnIndex = 0; columnIndex < this.getColumnsCount(); columnIndex++) {
       const cell = this.createCell(newRowIndex, columnIndex);
       this.cells[newRowIndex][columnIndex] = cell;
       row.appendChild(cell);
@@ -159,20 +163,18 @@ class Table {
     this.row[rowIndex].remove();
     this.row.splice(rowIndex, 1);
     this.cells.splice(rowIndex, 1);
-    this.rows--;
   }
 
   removeColumnByIndex(columnIndex) {
-    for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < this.getRowsCount(); rowIndex++) {
       this.cells[rowIndex][columnIndex].remove();
       this.cells[rowIndex].splice(columnIndex, 1);
     }
-    this.columns--;
   }
 
   updateDataCells() {
-    for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-      for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
+    for (let rowIndex = 0; rowIndex < this.getRowsCount(); rowIndex++) {
+      for (let columnIndex = 0; columnIndex < this.getColumnsCount(); columnIndex++) {
         this.cells[rowIndex][columnIndex].dataset.row = String(rowIndex);
         this.cells[rowIndex][columnIndex].dataset.column = String(columnIndex);
       }
