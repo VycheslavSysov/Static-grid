@@ -78,7 +78,7 @@ class Table {
       const rowIndex = Number(this.deleteRowButton.dataset.rowIndex);
 
       this.removeRowByIndex(rowIndex);
-      this.updateDataCells();
+      this.syncCellIndexes();
       this.hideDeleteButtons();
     });
 
@@ -89,7 +89,7 @@ class Table {
       const columnIndex = Number(this.deleteColumnButton.dataset.columnIndex);
 
       this.removeColumnByIndex(columnIndex);
-      this.updateDataCells();
+      this.syncCellIndexes();
       this.hideDeleteButtons();
     });
 
@@ -172,7 +172,7 @@ class Table {
     }
   }
 
-  updateDataCells() {
+  syncCellIndexes() {
     for (let rowIndex = 0; rowIndex < this.getRowsCount(); rowIndex++) {
       for (let columnIndex = 0; columnIndex < this.getColumnsCount(); columnIndex++) {
         this.cells[rowIndex][columnIndex].dataset.row = String(rowIndex);
