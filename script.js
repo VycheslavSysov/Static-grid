@@ -21,7 +21,7 @@ class Table {
     this.hideDeleteButtons();
   }
 
-  static createCell(rowIndex, columnIndex) {
+  createCell(rowIndex, columnIndex) {
     const cell = document.createElement("div");
     cell.className = "cell";
     cell.dataset.row = String(rowIndex);
@@ -30,7 +30,7 @@ class Table {
   }
 
   bindEvents() {
-    this.tableElement.addEventListener("mousemove", (event) => {
+    this.table.addEventListener("mousemove", (event) => {
       const cell = event.target.closest(".cell");
       if (!cell) return;
 
@@ -47,7 +47,7 @@ class Table {
       this.deleteColumnButton.dataset.columnIndex = String(columnIndex);
     });
 
-    this.tableElement.addEventListener("mouseleave", (event) => {
+    this.table.addEventListener("mouseleave", (event) => {
       if (event.relatedTarget?.closest(".del-row, .del-col")) return;
       this.hideDeleteButtons();
     });
@@ -86,16 +86,16 @@ class Table {
     this.rows = this.startRows;
     this.columns = this.startColumns;
     this.cells = [];
-    this.rowElements = [];
+    this.row = [];
   }
 
   createLayout() {
     this.wrapper = document.createElement("div");
     this.wrapper.className = "wrapper";
     this.parent.appendChild(this.wrapper);
-    this.tableElement = document.createElement("div");
-    this.tableElement.className = "table";
-    this.wrapper.appendChild(this.tableElement);
+    this.table = document.createElement("div");
+    this.table.className = "table";
+    this.wrapper.appendChild(this.table);
   }
 
   createControls() {
@@ -133,31 +133,31 @@ class Table {
     const newColumnIndex = this.columns - 1;
 
     for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
-      const cellElement = Table.createCell(rowIndex, newColumnIndex);
-      this.cells[rowIndex].push(cellElement);
-      this.rowElements[rowIndex].appendChild(cellElement);
+      const cell = this.createCell(rowIndex, newColumnIndex);
+      this.cells[rowIndex].push(cell);
+      this.row[rowIndex].appendChild(cell);
     }
   }
 
   addNewRow() {
     this.rows++;
     const newRowIndex = this.rows - 1;
-    const rowElement = document.createElement("div");
-    rowElement.className = "row";
-    this.tableElement.appendChild(rowElement);
-    this.rowElements[newRowIndex] = rowElement;
+    const row = document.createElement("div");
+    row.className = "row";
+    this.table.appendChild(row);
+    this.row[newRowIndex] = row;
     this.cells[newRowIndex] = [];
 
     for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-      const cellElement = Table.createCell(newRowIndex, columnIndex);
-      this.cells[newRowIndex][columnIndex] = cellElement;
-      rowElement.appendChild(cellElement);
+      const cell = this.createCell(newRowIndex, columnIndex);
+      this.cells[newRowIndex][columnIndex] = cell;
+      row.appendChild(cell);
     }
   }
 
   removeRowByIndex(rowIndex) {
-    this.rowElements[rowIndex].remove();
-    this.rowElements.splice(rowIndex, 1);
+    this.row[rowIndex].remove();
+    this.row.splice(rowIndex, 1);
     this.cells.splice(rowIndex, 1);
     this.rows--;
   }
@@ -180,22 +180,22 @@ class Table {
   }
 
   renderGrid() {
-    this.tableElement.innerHTML = "";
+    this.table.innerHTML = "";
     this.cells.length = 0;
-    this.rowElements.length = 0;
+    this.row.length = 0;
 
     for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
       this.cells[rowIndex] = [];
 
-      const rowElement = document.createElement("div");
-      rowElement.className = "row";
-      this.tableElement.appendChild(rowElement);
-      this.rowElements[rowIndex] = rowElement;
+      const row = document.createElement("div");
+      row.className = "row";
+      this.table.appendChild(row);
+      this.row[rowIndex] = row;
 
       for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
-        const cellElement = Table.createCell(rowIndex, columnIndex);
-        this.cells[rowIndex][columnIndex] = cellElement;
-        rowElement.appendChild(cellElement);
+        const cell = this.createCell(rowIndex, columnIndex);
+        this.cells[rowIndex][columnIndex] = cell;
+        row.appendChild(cell);
       }
     }
   }
