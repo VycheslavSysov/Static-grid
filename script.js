@@ -39,7 +39,7 @@ class Table {
   }
 
   bindEvents() {
-    this.table.addEventListener("mousemove", (event) => {
+    this.table.addEventListener("mouseover", (event) => {
       const cell = event.target.closest(".cell");
       if (!cell) return;
 
@@ -212,4 +212,4 @@ class Table {
   }
 }
 
-for (let tableIndex = 0; tableIndex < 11; tableIndex++) new Table(tablesRoot);
+for (let tableIndex = 0; tableIndex < 51; tableIndex++) new Table(tablesRoot);
