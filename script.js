@@ -61,6 +61,14 @@ class Table {
       this.hideDeleteButtons();
     });
 
+    this.deleteRowButton.addEventListener("mouseleave", () => {
+      this.hideDeleteButtons();
+    });
+
+    this.deleteColumnButton.addEventListener("mouseleave", () => {
+      this.hideDeleteButtons();
+    });
+
     this.addColumnButton.addEventListener("click", () => {
       this.addNewColumn();
       this.hideDeleteButtons();
@@ -182,16 +190,16 @@ class Table {
   }
 
   renderGrid() {
-    this.table.innerHTML = "";
     this.cells.length = 0;
     this.row.length = 0;
+    const rowsFragment = document.createDocumentFragment();
 
     for (let rowIndex = 0; rowIndex < this.rows; rowIndex++) {
       this.cells[rowIndex] = [];
 
       const row = document.createElement("div");
       row.className = "row";
-      this.table.appendChild(row);
+      rowsFragment.appendChild(row);
       this.row[rowIndex] = row;
 
       for (let columnIndex = 0; columnIndex < this.columns; columnIndex++) {
@@ -200,6 +208,7 @@ class Table {
         row.appendChild(cell);
       }
     }
+    this.table.appendChild(rowsFragment);
   }
 }
 
