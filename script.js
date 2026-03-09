@@ -39,7 +39,7 @@ class Table {
   }
 
   bindEvents() {
-    this.table.addEventListener("mouseover", (event) => {
+    this.table.addEventListener("pointerover", (event) => {
       const cell = event.target.closest(".cell");
       if (!cell) return;
 
