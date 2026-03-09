@@ -35,7 +35,7 @@ class Table {
   }
 
   getColumnsCount() {
-    return this.cells[0]?.length ?? 0;
+    return this.cells[0]?.length ?? this.columns;
   }
 
   bindEvents() {
