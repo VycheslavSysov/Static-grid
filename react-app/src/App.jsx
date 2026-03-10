@@ -1,7 +1,12 @@
+import TableGrid from "./TableGrid.jsx";
 
 
 function App() {
-  return <div id="app"></div>;
+  return (
+      <div className="tables">
+        <TableGrid />
+      </div>
+  );
 }
 
 

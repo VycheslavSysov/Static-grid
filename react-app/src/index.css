@@ -19,7 +19,7 @@
   position: relative;
 }
 
-.btn {
+.button {
   width: var(--cell-size);
   height: var(--cell-size);
   border: none;
@@ -28,17 +28,17 @@
   color: #fff;
 }
 
-.btn:hover {
+.button:hover {
   filter: brightness(1.1);
 }
 
-.btn:active {
+.button:active {
   transform: translateY(1px);
   border: 1px solid #6aaee6;
   border-radius: 1px;
 }
 
-.add-col {
+.add-column {
   position: absolute;
   top: 2px;
   right: -52px;
@@ -52,7 +52,7 @@
   background: #e6a93b;
 }
 
-.del-col {
+.delete-column {
   display: none;
   position: absolute;
   top: -52px;
@@ -60,7 +60,7 @@
   background: #9f1d14;
 }
 
-.del-row {
+.delete-row {
   display: none;
   position: absolute;
   left: -52px;
