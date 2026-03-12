@@ -4,7 +4,9 @@ import TableGrid from "./TableGrid.jsx";
 function App() {
   return (
       <div className="tables">
-        <TableGrid />
+        {Array.from({ length: 51 }, (_, index) => (
+            <TableGrid key={index}/>
+        ))}
       </div>
   );
 }

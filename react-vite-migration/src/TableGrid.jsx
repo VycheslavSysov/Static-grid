@@ -12,20 +12,23 @@ function TableGrid() {
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [activeColumnIndex, setActiveColumnIndex] = useState(null);
 
+  const hideDeleteButton = () => {
+    setActiveRowIndex(null);
+    setActiveColumnIndex(null);
+  };
+
   const handleDeleteRowClick = () => {
     setRowIds((currentIds) => {
       return currentIds.filter((_, index) => index !== activeRowIndex);
     });
-    setActiveRowIndex(null);
-    setActiveColumnIndex(null);
+    hideDeleteButton();
   };
 
   const handleDeleteColumnClick = () => {
     setColumnIds((currentIds) => {
       return currentIds.filter((_, index) => index !== activeColumnIndex);
     })
-    setActiveRowIndex(null);
-    setActiveColumnIndex(null);
+    hideDeleteButton();
   };
 
   const handleAddRowClick = () => {
@@ -33,8 +36,7 @@ function TableGrid() {
       const lastId = currentIds[currentIds.length - 1];
       return [...currentIds, lastId + 1];
     });
-    setActiveRowIndex(null);
-    setActiveColumnIndex(null);
+    hideDeleteButton();
   };
 
   const handleAddColumnClick = () => {
@@ -42,6 +44,7 @@ function TableGrid() {
       const lastId = currentIds[currentIds.length - 1];
       return [...currentIds, lastId + 1];
     });
+    hideDeleteButton();
   };
 
   const handlePointerOverCell = (event) => {
@@ -56,10 +59,9 @@ function TableGrid() {
   }
 
   const handleMouseLeaveTable = (event) => {
-    if (event.relatedTarget instanceof Element && event.relatedTarget?.closest(".delete-row, .delete-column")) return;
+    if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) return;
 
-    setActiveRowIndex(null);
-    setActiveColumnIndex(null);
+    hideDeleteButton();
   }
 
   return (
@@ -96,8 +98,7 @@ function TableGrid() {
             className="button delete-column"
             onClick={handleDeleteColumnClick}
             onMouseLeave={() => {
-              setActiveRowIndex(null);
-              setActiveColumnIndex(null);
+              hideDeleteButton()
             }}
             style={{
               display: activeColumnIndex === null || columnIds.length <= 1 ? "none" : "block",
@@ -110,8 +111,7 @@ function TableGrid() {
             className="button delete-row"
             onClick={handleDeleteRowClick}
             onMouseLeave={() => {
-              setActiveRowIndex(null);
-              setActiveColumnIndex(null);
+              hideDeleteButton()
             }}
             style={{
               display: activeRowIndex === null || rowIds.length <= 1 ? "none" : "block",
@@ -122,7 +122,6 @@ function TableGrid() {
 
       </div>
   );
-
 }
 
 export default TableGrid;
