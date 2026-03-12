@@ -97,9 +97,7 @@ function TableGrid() {
         <button
             className="button delete-column"
             onClick={handleDeleteColumnClick}
-            onMouseLeave={() => {
-              hideDeleteButton()
-            }}
+            onMouseLeave={hideDeleteButton}
             style={{
               display: activeColumnIndex === null || columnIds.length <= 1 ? "none" : "block",
               transform: `translateX(${activeColumnIndex * STEP}px)`,
@@ -110,12 +108,10 @@ function TableGrid() {
         <button
             className="button delete-row"
             onClick={handleDeleteRowClick}
-            onMouseLeave={() => {
-              hideDeleteButton()
-            }}
+            onMouseLeave={hideDeleteButton}
             style={{
               display: activeRowIndex === null || rowIds.length <= 1 ? "none" : "block",
-              transform: `translateY(${activeRowIndex * STEP}px)`,
+              transform: `translateY(${activeRowIndex * STEP}px)`
             }}
         >-
         </button>
