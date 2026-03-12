@@ -212,4 +212,4 @@ class Table {
   }
 }
 
-for (let tableIndex = 0; tableIndex < 51; tableIndex++) new Table(tablesRoot);
+for (let tableIndex = 0; tableIndex < 1; tableIndex++) new Table(tablesRoot);
