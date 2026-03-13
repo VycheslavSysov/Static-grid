@@ -54,8 +54,8 @@ function TableGrid() {
     const rowIndex = Number(cellElement.dataset.row);
     const columnIndex = Number(cellElement.dataset.column);
 
-    setActiveRowIndex(rowIndex);
-    setActiveColumnIndex(columnIndex);
+    if (rowIndex !== activeRowIndex) setActiveRowIndex(rowIndex);
+    if (columnIndex !== activeColumnIndex) setActiveColumnIndex(columnIndex);
   }
 
   const handleMouseLeaveTable = (event) => {
