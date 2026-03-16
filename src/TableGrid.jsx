@@ -29,7 +29,13 @@ function TableGrid() {
     hideDeleteButton();
   };
 
-  const handleDeleteColumnClick = () => {};
+  const handleDeleteColumnClick = () => {
+    setGrid((currentGrid) =>
+        currentGrid.map((row) =>
+        row.filter((_, index) => index !== activeColumnIndex))
+    );
+    hideDeleteButton();
+  };
 
   const handleAddRowClick = () => {};
 
