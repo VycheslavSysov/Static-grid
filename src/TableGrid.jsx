@@ -7,8 +7,13 @@ const STEP = CELL_SIZE + GAP;
 
 
 function TableGrid() {
-  const [rowIds, setRowIds] = useState(() => [0, 1, 2, 3]);
-  const [columnIds, setColumnIds] = useState(() => [0, 1, 2, 3]);
+  const [grid, setGrid] = useState(() => [
+        [0, 1, 2, 3],
+        [4, 5, 6, 7],
+        [8, 9, 10, 11],
+        [12, 13, 14, 15],
+  ]);
+
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [activeColumnIndex, setActiveColumnIndex] = useState(null);
 
@@ -18,34 +23,17 @@ function TableGrid() {
   };
 
   const handleDeleteRowClick = () => {
-    setRowIds((currentIds) => {
-      return currentIds.filter((_, index) => index !== activeRowIndex);
-    });
+    setGrid((currentGrid) =>
+        currentGrid.filter((_, index) => index !== activeRowIndex)
+    );
     hideDeleteButton();
   };
 
-  const handleDeleteColumnClick = () => {
-    setColumnIds((currentIds) => {
-      return currentIds.filter((_, index) => index !== activeColumnIndex);
-    })
-    hideDeleteButton();
-  };
+  const handleDeleteColumnClick = () => {};
 
-  const handleAddRowClick = () => {
-    setRowIds((currentIds) => {
-      const lastId = currentIds[currentIds.length - 1];
-      return [...currentIds, lastId + 1];
-    });
-    hideDeleteButton();
-  };
+  const handleAddRowClick = () => {};
 
-  const handleAddColumnClick = () => {
-    setColumnIds((currentIds) => {
-      const lastId = currentIds[currentIds.length - 1];
-      return [...currentIds, lastId + 1];
-    });
-    hideDeleteButton();
-  };
+  const handleAddColumnClick = () => {};
 
   const handlePointerOverCell = (event) => {
     const cellElement = event.target.closest(".cell");
@@ -71,12 +59,12 @@ function TableGrid() {
             onPointerOver={handlePointerOverCell}
             onMouseLeave={handleMouseLeaveTable}
         >
-          {rowIds.map((rowId, rowIndex) => (
-              <div className="row" key={rowId}>
-                {columnIds.map((columnId, columnIndex) => (
+          {grid.map((row, rowIndex) => (
+              <div className="row" key={rowIndex}>
+                {row.map((cellId, columnIndex) => (
                     <div
                         className="cell"
-                        key={columnId}
+                        key={cellId}
                         data-row={rowIndex}
                         data-column={columnIndex}
                     />
@@ -99,8 +87,7 @@ function TableGrid() {
             onClick={handleDeleteColumnClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display: activeColumnIndex === null || columnIds.length <= 1 ? "none" : "block",
-              transform: `translateX(${activeColumnIndex * STEP}px)`,
+              display:"none",
             }}
         >-
         </button>
@@ -110,8 +97,7 @@ function TableGrid() {
             onClick={handleDeleteRowClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display: activeRowIndex === null || rowIds.length <= 1 ? "none" : "block",
-              transform: `translateY(${activeRowIndex * STEP}px)`
+              display:"none"
             }}
         >-
         </button>
