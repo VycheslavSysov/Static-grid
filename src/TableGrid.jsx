@@ -4,15 +4,16 @@ const rootStyles = getComputedStyle(document.documentElement);
 const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
 const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
+const ROWS = 4;
+const COLUMNS = 4;
 
 
 function TableGrid() {
-  const [grid, setGrid] = useState(() => [
-    [0, 1, 2, 3],
-    [4, 5, 6, 7],
-    [8, 9, 10, 11],
-    [12, 13, 14, 15],
-  ]);
+  const [grid, setGrid] = useState(() =>
+      Array.from({length: ROWS},  (_, rowIndex) =>
+       Array.from({length: COLUMNS}, (_, columnIndex) => rowIndex * COLUMNS + columnIndex)
+   )
+  );
 
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [activeColumnIndex, setActiveColumnIndex] = useState(null);
