@@ -37,7 +37,15 @@ function TableGrid() {
     hideDeleteButton();
   };
 
-  const handleAddRowClick = () => {};
+  const handleAddRowClick = () => {
+    setGrid((currentGrid) => {
+      const columnCount = currentGrid[0].length;
+      const lastId = currentGrid.flat().at(-1);
+      const newRow = Array.from({length: columnCount}, (_, index) => lastId + index + 1);
+      return [...currentGrid, newRow];
+    });
+    hideDeleteButton();
+  };
 
   const handleAddColumnClick = () => {};
 
