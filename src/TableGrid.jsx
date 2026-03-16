@@ -8,10 +8,10 @@ const STEP = CELL_SIZE + GAP;
 
 function TableGrid() {
   const [grid, setGrid] = useState(() => [
-        [0, 1, 2, 3],
-        [4, 5, 6, 7],
-        [8, 9, 10, 11],
-        [12, 13, 14, 15],
+    [0, 1, 2, 3],
+    [4, 5, 6, 7],
+    [8, 9, 10, 11],
+    [12, 13, 14, 15],
   ]);
 
   const [activeRowIndex, setActiveRowIndex] = useState(null);
@@ -32,7 +32,7 @@ function TableGrid() {
   const handleDeleteColumnClick = () => {
     setGrid((currentGrid) =>
         currentGrid.map((row) =>
-        row.filter((_, index) => index !== activeColumnIndex))
+            row.filter((_, index) => index !== activeColumnIndex))
     );
     hideDeleteButton();
   };
@@ -47,7 +47,16 @@ function TableGrid() {
     hideDeleteButton();
   };
 
-  const handleAddColumnClick = () => {};
+  const handleAddColumnClick = () => {
+    setGrid((currentGrid) => {
+      const lastId = currentGrid.flat().at(-1);
+      return currentGrid.map((row, rowIndex) => [
+        ...row,
+        lastId + rowIndex + 1,
+      ]);
+    });
+    hideDeleteButton();
+  };
 
   const handlePointerOverCell = (event) => {
     const cellElement = event.target.closest(".cell");
@@ -101,7 +110,7 @@ function TableGrid() {
             onClick={handleDeleteColumnClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display:"none",
+              display: "none",
             }}
         >-
         </button>
@@ -111,7 +120,7 @@ function TableGrid() {
             onClick={handleDeleteRowClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display:"none"
+              display: "none"
             }}
         >-
         </button>
