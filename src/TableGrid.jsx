@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 
 const rootStyles = getComputedStyle(document.documentElement);
 const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
@@ -18,27 +18,27 @@ function TableGrid() {
   const [activeRowIndex, setActiveRowIndex] = useState(null);
   const [activeColumnIndex, setActiveColumnIndex] = useState(null);
 
-  const hideDeleteButton = () => {
+  const hideDeleteButton = useCallback(() => {
     setActiveRowIndex(null);
     setActiveColumnIndex(null);
-  };
+  },[]);
 
-  const handleDeleteRowClick = () => {
+  const handleDeleteRowClick = useCallback(() => {
     setGrid((currentGrid) =>
         currentGrid.filter((_, index) => index !== activeRowIndex)
     );
     hideDeleteButton();
-  };
+  }, [activeRowIndex, hideDeleteButton]);
 
-  const handleDeleteColumnClick = () => {
+  const handleDeleteColumnClick = useCallback(() => {
     setGrid((currentGrid) =>
         currentGrid.map((row) =>
             row.filter((_, index) => index !== activeColumnIndex))
     );
     hideDeleteButton();
-  };
+  }, [activeColumnIndex, hideDeleteButton]);
 
-  const handleAddRowClick = () => {
+  const handleAddRowClick = useCallback(() => {
     setGrid((currentGrid) => {
       const columnCount = currentGrid[0].length;
       const lastId = currentGrid.flat().at(-1);
@@ -46,9 +46,9 @@ function TableGrid() {
       return [...currentGrid, newRow];
     });
     hideDeleteButton();
-  };
+  }, [hideDeleteButton]);
 
-  const handleAddColumnClick = () => {
+  const handleAddColumnClick = useCallback(() => {
     setGrid((currentGrid) => {
       const lastId = currentGrid.flat().at(-1);
       return currentGrid.map((row, rowIndex) => [
@@ -57,9 +57,9 @@ function TableGrid() {
       ]);
     });
     hideDeleteButton();
-  };
+  },[hideDeleteButton]);
 
-  const handlePointerOverCell = (event) => {
+  const handlePointerOverCell = useCallback((event) => {
     const cellElement = event.target.closest(".cell");
     if (cellElement === null) return;
 
@@ -68,13 +68,13 @@ function TableGrid() {
 
     if (rowIndex !== activeRowIndex) setActiveRowIndex(rowIndex);
     if (columnIndex !== activeColumnIndex) setActiveColumnIndex(columnIndex);
-  }
+  }, [activeColumnIndex, activeRowIndex]);
 
-  const handleMouseLeaveTable = (event) => {
+  const handleMouseLeaveTable = useCallback((event) => {
     if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) return;
 
     hideDeleteButton();
-  }
+  }, [hideDeleteButton]);
 
   return (
       <div className="wrapper">
