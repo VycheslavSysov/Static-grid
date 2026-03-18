@@ -4,20 +4,19 @@ const rootStyles = getComputedStyle(document.documentElement);
 const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
 const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
-const ROWS = 4;
-const COLUMNS = 4;
 
+function createGrid(rows, columns) {
+ return Array.from({length: rows},  (_, rowIndex) =>
+       Array.from({length: columns}, (_, columnIndex) => rowIndex * columns + columnIndex)
+   );
+}
 
-function TableGrid() {
-  const [grid, setGrid] = useState(() =>
-      Array.from({length: ROWS},  (_, rowIndex) =>
-       Array.from({length: COLUMNS}, (_, columnIndex) => rowIndex * COLUMNS + columnIndex)
-   )
-  );
+function TableGrid({rows = 4, columns = 4}) {
+  const [grid, setGrid] = useState(() => createGrid(rows, columns));
 
   const [activeIndex, setActiveIndex] = useState({row: null, column: null});
 
-  const hideDeleteButton = useCallback(() => {
+  const resetActiveIndex = useCallback(() => {
     setActiveIndex({row: null, column: null});
   },[]);
 
@@ -25,7 +24,7 @@ function TableGrid() {
     setGrid((currentGrid) =>
         currentGrid.filter((_, index) => index !== activeIndex.row)
     );
-    hideDeleteButton();
+    resetActiveIndex();
   }, [activeIndex.row]);
 
   const handleDeleteColumnClick = useCallback(() => {
@@ -33,7 +32,7 @@ function TableGrid() {
         currentGrid.map((row) =>
             row.filter((_, index) => index !== activeIndex.column))
     );
-    hideDeleteButton();
+    resetActiveIndex();
   }, [activeIndex.column]);
 
   const handleAddRowClick = useCallback(() => {
@@ -43,7 +42,7 @@ function TableGrid() {
       const newRow = Array.from({length: columnCount}, (_, index) => lastId + index + 1);
       return [...currentGrid, newRow];
     });
-    hideDeleteButton();
+    resetActiveIndex();
   }, []);
 
   const handleAddColumnClick = useCallback(() => {
@@ -54,7 +53,7 @@ function TableGrid() {
         lastId + rowIndex + 1,
       ]);
     });
-    hideDeleteButton();
+    resetActiveIndex();
   },[]);
 
   const handlePointerOverCell = useCallback((event) => {
@@ -74,7 +73,7 @@ function TableGrid() {
     if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) {
       return;
     }
-    hideDeleteButton();
+    resetActiveIndex();
   }, []);
 
   return (
@@ -110,7 +109,7 @@ function TableGrid() {
         <button
             className="button delete-column"
             onClick={handleDeleteColumnClick}
-            onMouseLeave={hideDeleteButton}
+            onMouseLeave={resetActiveIndex}
             style={{
               display: activeIndex.column === null || grid[0].length <= 1 ? "none" : "block",
               transform: `translateX(${activeIndex.column * STEP}px)`,
@@ -121,7 +120,7 @@ function TableGrid() {
         <button
             className="button delete-row"
             onClick={handleDeleteRowClick}
-            onMouseLeave={hideDeleteButton}
+            onMouseLeave={resetActiveIndex}
             style={{
               display: activeIndex.row === null || grid.length <= 1 ? "none" : "block",
               transform: `translateY(${activeIndex.row * STEP}px)`,
