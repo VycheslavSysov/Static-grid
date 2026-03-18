@@ -6,9 +6,11 @@ const GAP = Number.parseInt(rootStyles.getPropertyValue("--cell-gap"), 10);
 const STEP = CELL_SIZE + GAP;
 
 function createGrid(rows, columns) {
- return Array.from({length: rows},  (_, rowIndex) =>
-       Array.from({length: columns}, (_, columnIndex) => rowIndex * columns + columnIndex)
-   );
+  {
+    return Array.from({length: rows}, (_, rowIndex) =>
+        Array.from({length: columns}, (_, columnIndex) => rowIndex * columns + columnIndex)
+    );
+  }
 }
 
 function TableGrid({rows = 4, columns = 4}) {
@@ -18,14 +20,14 @@ function TableGrid({rows = 4, columns = 4}) {
 
   const resetActiveIndex = useCallback(() => {
     setActiveIndex({row: null, column: null});
-  },[]);
+  }, []);
 
   const handleDeleteRowClick = useCallback(() => {
     setGrid((currentGrid) =>
         currentGrid.filter((_, index) => index !== activeIndex.row)
     );
     resetActiveIndex();
-  }, [activeIndex.row]);
+  }, [activeIndex.row, resetActiveIndex]);/*ESLint требует указать хоть и никогда не меняется*/
 
   const handleDeleteColumnClick = useCallback(() => {
     setGrid((currentGrid) =>
@@ -33,39 +35,49 @@ function TableGrid({rows = 4, columns = 4}) {
             row.filter((_, index) => index !== activeIndex.column))
     );
     resetActiveIndex();
-  }, [activeIndex.column]);
+  }, [activeIndex.column, resetActiveIndex]);/*ESLint требует указать*/
 
   const handleAddRowClick = useCallback(() => {
     setGrid((currentGrid) => {
       const columnCount = currentGrid[0].length;
       const lastId = currentGrid.flat().at(-1);
       const newRow = Array.from({length: columnCount}, (_, index) => lastId + index + 1);
-      return [...currentGrid, newRow];
+      {
+        return [...currentGrid, newRow];
+      }
     });
     resetActiveIndex();
-  }, []);
+   }, [resetActiveIndex]);/*ESLint требует указать*/
 
   const handleAddColumnClick = useCallback(() => {
     setGrid((currentGrid) => {
       const lastId = currentGrid.flat().at(-1);
-      return currentGrid.map((row, rowIndex) => [
-        ...row,
-        lastId + rowIndex + 1,
-      ]);
+      {
+        return currentGrid.map((row, rowIndex) => [
+          ...row,
+          lastId + rowIndex + 1,
+        ]);
+      }
     });
     resetActiveIndex();
-  },[]);
+  }, [resetActiveIndex]);/*ESLint требует указать*/
 
   const handlePointerOverCell = useCallback((event) => {
     const cellElement = event.target.closest(".cell");
-    if (cellElement === null) return;
+    if (cellElement === null) {
+      return;
+    }
 
     const rowIndex = Number(cellElement.dataset.row);
     const columnIndex = Number(cellElement.dataset.column);
 
     setActiveIndex(previous => {
-      if (previous.row === rowIndex && previous.column === columnIndex) return previous;
-      return{row: rowIndex, column: columnIndex};
+      if (previous.row === rowIndex && previous.column === columnIndex) {
+        return previous;
+      }
+      {
+        return {row: rowIndex, column: columnIndex};
+      }
     })
   }, []);
 
@@ -74,7 +86,7 @@ function TableGrid({rows = 4, columns = 4}) {
       return;
     }
     resetActiveIndex();
-  }, []);
+  }, [resetActiveIndex]);/*ESLint требует указать*/
 
   return (
       <div className="wrapper">
