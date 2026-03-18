@@ -15,28 +15,26 @@ function TableGrid() {
    )
   );
 
-  const [activeRowIndex, setActiveRowIndex] = useState(null);
-  const [activeColumnIndex, setActiveColumnIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState({row: null, column: null});
 
   const hideDeleteButton = useCallback(() => {
-    setActiveRowIndex(null);
-    setActiveColumnIndex(null);
+    setActiveIndex({row: null, column: null});
   },[]);
 
   const handleDeleteRowClick = useCallback(() => {
     setGrid((currentGrid) =>
-        currentGrid.filter((_, index) => index !== activeRowIndex)
+        currentGrid.filter((_, index) => index !== activeIndex.row)
     );
     hideDeleteButton();
-  }, [activeRowIndex, hideDeleteButton]);
+  }, [activeIndex.row]);
 
   const handleDeleteColumnClick = useCallback(() => {
     setGrid((currentGrid) =>
         currentGrid.map((row) =>
-            row.filter((_, index) => index !== activeColumnIndex))
+            row.filter((_, index) => index !== activeIndex.column))
     );
     hideDeleteButton();
-  }, [activeColumnIndex, hideDeleteButton]);
+  }, [activeIndex.column]);
 
   const handleAddRowClick = useCallback(() => {
     setGrid((currentGrid) => {
@@ -46,7 +44,7 @@ function TableGrid() {
       return [...currentGrid, newRow];
     });
     hideDeleteButton();
-  }, [hideDeleteButton]);
+  }, []);
 
   const handleAddColumnClick = useCallback(() => {
     setGrid((currentGrid) => {
@@ -57,7 +55,7 @@ function TableGrid() {
       ]);
     });
     hideDeleteButton();
-  },[hideDeleteButton]);
+  },[]);
 
   const handlePointerOverCell = useCallback((event) => {
     const cellElement = event.target.closest(".cell");
@@ -66,15 +64,18 @@ function TableGrid() {
     const rowIndex = Number(cellElement.dataset.row);
     const columnIndex = Number(cellElement.dataset.column);
 
-    if (rowIndex !== activeRowIndex) setActiveRowIndex(rowIndex);
-    if (columnIndex !== activeColumnIndex) setActiveColumnIndex(columnIndex);
-  }, [activeColumnIndex, activeRowIndex]);
+    setActiveIndex(previous => {
+      if (previous.row === rowIndex && previous.column === columnIndex) return previous;
+      return{row: rowIndex, column: columnIndex};
+    })
+  }, []);
 
   const handleMouseLeaveTable = useCallback((event) => {
-    if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) return;
-
+    if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) {
+      return;
+    }
     hideDeleteButton();
-  }, [hideDeleteButton]);
+  }, []);
 
   return (
       <div className="wrapper">
@@ -111,8 +112,8 @@ function TableGrid() {
             onClick={handleDeleteColumnClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display: activeColumnIndex === null || grid[0].length <= 1 ? "none" : "block",
-              transform: `translateX(${activeColumnIndex * STEP}px)`,
+              display: activeIndex.column === null || grid[0].length <= 1 ? "none" : "block",
+              transform: `translateX(${activeIndex.column * STEP}px)`,
             }}
         >-
         </button>
@@ -122,8 +123,8 @@ function TableGrid() {
             onClick={handleDeleteRowClick}
             onMouseLeave={hideDeleteButton}
             style={{
-              display: activeRowIndex === null || grid.length <= 1 ? "none" : "block",
-              transform: `translateY(${activeRowIndex * STEP}px)`,
+              display: activeIndex.row === null || grid.length <= 1 ? "none" : "block",
+              transform: `translateY(${activeIndex.row * STEP}px)`,
             }}
         >-
         </button>
