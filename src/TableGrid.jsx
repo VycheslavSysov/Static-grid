@@ -16,7 +16,7 @@ function TableGrid({rows = 4, columns = 4}) {
 
   const [activeIndex, setActiveIndex] = useState({row: null, column: null});
 
-  const resetActiveIndex = useCallback(() => {
+  const hideDeleteButton = useCallback(() => {
     setActiveIndex({row: null, column: null});
   },[]);
 
@@ -24,7 +24,7 @@ function TableGrid({rows = 4, columns = 4}) {
     setGrid((currentGrid) =>
         currentGrid.filter((_, index) => index !== activeIndex.row)
     );
-    resetActiveIndex();
+    hideDeleteButton();
   }, [activeIndex.row]);
 
   const handleDeleteColumnClick = useCallback(() => {
@@ -32,7 +32,7 @@ function TableGrid({rows = 4, columns = 4}) {
         currentGrid.map((row) =>
             row.filter((_, index) => index !== activeIndex.column))
     );
-    resetActiveIndex();
+    hideDeleteButton();
   }, [activeIndex.column]);
 
   const handleAddRowClick = useCallback(() => {
@@ -42,7 +42,7 @@ function TableGrid({rows = 4, columns = 4}) {
       const newRow = Array.from({length: columnCount}, (_, index) => lastId + index + 1);
       return [...currentGrid, newRow];
     });
-    resetActiveIndex();
+    hideDeleteButton();
   }, []);
 
   const handleAddColumnClick = useCallback(() => {
@@ -53,7 +53,7 @@ function TableGrid({rows = 4, columns = 4}) {
         lastId + rowIndex + 1,
       ]);
     });
-    resetActiveIndex();
+    hideDeleteButton();
   },[]);
 
   const handlePointerOverCell = useCallback((event) => {
@@ -73,7 +73,7 @@ function TableGrid({rows = 4, columns = 4}) {
     if (event.relatedTarget instanceof Element && event.relatedTarget.closest(".delete-row, .delete-column")) {
       return;
     }
-    resetActiveIndex();
+    hideDeleteButton();
   }, []);
 
   return (
@@ -109,7 +109,7 @@ function TableGrid({rows = 4, columns = 4}) {
         <button
             className="button delete-column"
             onClick={handleDeleteColumnClick}
-            onMouseLeave={resetActiveIndex}
+            onMouseLeave={hideDeleteButton}
             style={{
               display: activeIndex.column === null || grid[0].length <= 1 ? "none" : "block",
               transform: `translateX(${activeIndex.column * STEP}px)`,
@@ -120,7 +120,7 @@ function TableGrid({rows = 4, columns = 4}) {
         <button
             className="button delete-row"
             onClick={handleDeleteRowClick}
-            onMouseLeave={resetActiveIndex}
+            onMouseLeave={hideDeleteButton}
             style={{
               display: activeIndex.row === null || grid.length <= 1 ? "none" : "block",
               transform: `translateY(${activeIndex.row * STEP}px)`,
