@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 
 const rootStyles = getComputedStyle(document.documentElement);
 const CELL_SIZE = Number.parseInt(rootStyles.getPropertyValue("--cell-size"), 10);
@@ -9,103 +9,133 @@ function createGrid(rows, columns) {
   let id = 0;
   const grid = [];
 
-  for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+  for (let r = 0; r < rows; r++) {
     const row = [];
-    for (let columnIndex = 0; columnIndex < columns; columnIndex++) {
+    for (let c = 0; c < columns; c++) {
       row.push(id++);
     }
     grid.push(row);
   }
-  {
-    return { grid, lastId: id - 1 };
+
+  return { grid, lastId: id - 1 };
+}
+
+// ✅ Reducer = єдине джерело правди
+function gridReducer(state, action) {
+  switch (action.type) {
+    case "addRow": {
+      const columnCount = state.grid[0]?.length ?? 0;
+      if (!columnCount) return state;
+
+      const newRow = new Array(columnCount);
+      let lastId = state.lastId;
+
+      for (let i = 0; i < columnCount; i++) {
+        newRow[i] = ++lastId;
+      }
+
+      return {
+        grid: [...state.grid, newRow],
+        lastId,
+      };
+    }
+
+    case "deleteRow": {
+      if (action.row === null) return state;
+
+      return {
+        ...state,
+        grid: state.grid.filter((_, i) => i !== action.row),
+      };
+    }
+
+    case "addColumn": {
+      let lastId = state.lastId;
+
+      const newGrid = state.grid.map((row) => {
+        const newCell = ++lastId;
+        return [...row, newCell];
+      });
+
+      return {
+        grid: newGrid,
+        lastId,
+      };
+    }
+
+    case "deleteColumn": {
+      if (action.column === null) return state;
+
+      return {
+        ...state,
+        grid: state.grid.map((row) =>
+          row.filter((_, i) => i !== action.column)
+        ),
+      };
+    }
+
+    default:
+      return state;
   }
 }
 
 function TableGrid({ rows = 4, columns = 4 }) {
-  const initial = createGrid(rows, columns);
+  // ✅ Lazy init без ref і без дублювання
+  const [state, dispatch] = useReducer(
+    gridReducer,
+    { rows, columns },
+    ({ rows, columns }) => createGrid(rows, columns)
+  );
 
-  const [grid, setGrid] = useState(initial.grid);
-  const lastIdRef = useRef(initial.lastId);
+  const { grid } = state;
 
-  const [activeIndex, setActiveIndex] = useState({ row: null, column: null });
+  const [activeIndex, setActiveIndex] = useReducer(
+    (_, next) => next,
+    { row: null, column: null }
+  );
+
   const activeRef = useRef(activeIndex);
 
-  const setActive = useCallback((next) => {
-    activeRef.current = next;
-    setActiveIndex(next);
-  }, []);
+  useEffect(() => {
+    activeRef.current = activeIndex;
+  }, [activeIndex]);
 
   const resetActiveIndex = useCallback(() => {
-    setActive({ row: null, column: null });
-  }, [setActive]);
+    setActiveIndex({ row: null, column: null });
+  }, []);
 
   const handleAddRowClick = useCallback(() => {
-    setGrid((current) => {
-      const columnCount = current[0]?.length ?? 0;
-      if (columnCount === 0) return current;
-      const newRow = new Array(columnCount);
-
-      for (let i = 0; i < columnCount; i++) {
-        newRow[i] = ++lastIdRef.current;
-      }
-      {
-        return [...current, newRow];
-      }
-    });
-
+    dispatch({ type: "addRow" });
     resetActiveIndex();
   }, [resetActiveIndex]);
 
   const handleDeleteRowClick = useCallback(() => {
-    const rowToDelete = activeRef.current.row;
-    if (rowToDelete === null) {
-      return;
-    }
-    setGrid((current) => current.filter((_, i) => i !== rowToDelete));
-
+    dispatch({ type: "deleteRow", row: activeRef.current.row });
     resetActiveIndex();
   }, [resetActiveIndex]);
 
   const handleAddColumnClick = useCallback(() => {
-    setGrid((current) => {
-      return current.map((row) => {
-        const newCell = ++lastIdRef.current;
-        {
-          return [...row, newCell];
-        }
-      });
-    });
-
+    dispatch({ type: "addColumn" });
     resetActiveIndex();
   }, [resetActiveIndex]);
 
   const handleDeleteColumnClick = useCallback(() => {
-    const columnToDelete = activeRef.current.column;
-    if (columnToDelete === null) {
-      return;
-    }
-    setGrid((current) =>
-      current.map((row) => row.filter((_, i) => i !== columnToDelete))
-    );
-
+    dispatch({ type: "deleteColumn", column: activeRef.current.column });
     resetActiveIndex();
   }, [resetActiveIndex]);
 
   const handlePointerOver = useCallback((e) => {
     const cell = e.target.closest(".cell");
-    if (!cell) {
-      return;
-    }
+    if (!cell) return;
+
     const row = Number(cell.dataset.row);
     const column = Number(cell.dataset.column);
 
     const prev = activeRef.current;
+    if (prev.row === row && prev.column === column) return;
 
-    if (prev.row === row && prev.column === column) {
-      return;
-    }
-    setActive({ row, column });
-  }, [setActive]);
+    setActiveIndex({ row, column });
+  }, []);
 
   const handleMouseLeave = useCallback((event) => {
     if (
@@ -138,10 +168,12 @@ function TableGrid({ rows = 4, columns = 4 }) {
         ))}
       </div>
 
-      <button className="button add-column" onClick={handleAddColumnClick}>+
+      <button className="button add-column" onClick={handleAddColumnClick}>
+        +
       </button>
 
-      <button className="button add-row" onClick={handleAddRowClick}>+
+      <button className="button add-row" onClick={handleAddRowClick}>
+        +
       </button>
 
       <button
@@ -176,4 +208,5 @@ function TableGrid({ rows = 4, columns = 4 }) {
     </div>
   );
 }
+
 export default TableGrid;
